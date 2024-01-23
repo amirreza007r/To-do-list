@@ -1,14 +1,25 @@
 const inputBox = document.getElementById("input");
 const listContainer = document.getElementById("list-container");
 
+function handleInputChange() {
+    const addBtn = document.getElementById("add-btn");
+    const inputText = inputBox.value.trim();
+
+    if (inputText.length > 0) {
+        addBtn.classList.add("active");
+    } else {
+        addBtn.classList.remove("active");
+    }
+}
+
 function addTask() {
     if (inputBox.value === "") {
-        alert("you must enter somthing");
+        alert("You must enter something");
     } else {
         let li = document.createElement("li");
         li.innerHTML = inputBox.value;
         listContainer.appendChild(li);
-        console.log(inputBox.value);
+
         let span = document.createElement("span");
         span.innerHTML = "\u00d7";
         li.appendChild(span);
@@ -16,11 +27,13 @@ function addTask() {
     inputBox.value = "";
     saveData();
 }
+
 function handleKeyPress(event) {
     if (event.key === "Enter") {
         addTask();
     }
 }
+
 listContainer.addEventListener("click", function (e) {
     if (e.target.tagName === "LI") {
         e.target.classList.toggle("checked");
@@ -30,12 +43,21 @@ listContainer.addEventListener("click", function (e) {
         saveData();
     }
 });
+function clearAllTasks() {
+    if (confirm("Are you sure you want to clear all tasks?")) {
+        listContainer.innerHTML = "";
+        saveData();
+    }
+}
+
 function saveData() {
     localStorage.setItem("data", listContainer.innerHTML);
 }
+
 function showTask() {
     listContainer.innerHTML = localStorage.getItem("data");
 }
+
 showTask();
 
 function filterTasks(filter) {
@@ -43,7 +65,7 @@ function filterTasks(filter) {
     const filterButtons = document.querySelectorAll(".filter-section button");
 
     listItems.forEach((item) => {
-        item.style.display = "block"; // Reset display property
+        item.style.display = "block";
 
         if (filter === "ongoing" && item.classList.contains("checked")) {
             item.style.display = "none";
@@ -55,11 +77,9 @@ function filterTasks(filter) {
         }
     });
 
-    // Remove the active class from all buttons
     filterButtons.forEach((button) => {
         button.classList.remove("active");
     });
 
-    // Add the active class to the clicked button
     document.getElementById(`${filter}Btn`).classList.add("active");
 }
